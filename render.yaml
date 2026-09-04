@@ -1,0 +1,72 @@
+databases:
+  - name: nhaka-db
+    plan: free
+    databaseName: nhaka
+    user: nhaka
+
+services:
+  - type: web
+    name: nhaka-properties
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /up
+    envVars:
+      - key: APP_NAME
+        value: Nhaka
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_URL
+        sync: false
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: nhaka-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: nhaka-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: nhaka-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: nhaka-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: nhaka-db
+          property: password
+      - key: SESSION_DRIVER
+        value: database
+      - key: FILESYSTEM_DISK
+        value: r2
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_DEFAULT_REGION
+        value: auto
+      - key: AWS_BUCKET
+        sync: false
+      - key: AWS_ENDPOINT
+        sync: false
+      - key: AWS_URL
+        sync: false
+      - key: AWS_USE_PATH_STYLE_ENDPOINT
+        value: true
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        sync: false

@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Archivo:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+  --ink:#131C2B;
+  --paper:#F2F5F9;
+  --paper-2:#FFFFFF;
+  --forest:#123A6B;
+  --forest-dark:#0B2545;
+  --gold:#C08A28;
+  --gold-light:#DBAE5A;
+  --brick:#3E6FA6;
+  --line: rgba(19,28,43,0.12);
+}
+
+body{
+  font-family:'Archivo', sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+}
+
+.font-serif-brand{
+  font-family:'Fraunces', serif;
+}
