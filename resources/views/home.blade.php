@@ -209,13 +209,19 @@
         <div class="verify-card">
           <div class="top">
             <div>
-              <div class="id-line">Listed by</div>
-              <h4>Tanaka Moyo Properties</h4>
+              <div class="id-line">{{ $featuredAgent ? 'Listed by' : 'What a verified profile looks like' }}</div>
+              <h4>{{ $featuredAgent->name ?? 'Example agent profile' }}</h4>
             </div>
             <div class="agent"></div>
           </div>
-          <span class="verify-badge">✓ ID verified · Registered agent</span>
-          <div class="id-line" style="margin-top:14px;">Agent since 2023 · 34 active listings · Response time under 2 hrs</div>
+          <span class="verify-badge">✓ ID verified · Registered {{ $featuredAgent->role ?? 'agent' }}</span>
+          <div class="id-line" style="margin-top:14px;">
+            @if ($featuredAgent)
+              On {{ config('app.name') }} since {{ $featuredAgent->created_at->format('Y') }} · {{ $featuredAgent->properties_count }} active listing{{ $featuredAgent->properties_count === 1 ? '' : 's' }}
+            @else
+              Every agent goes through this same ID and address check before their first listing goes live.
+            @endif
+          </div>
         </div>
       </div>
     </div>

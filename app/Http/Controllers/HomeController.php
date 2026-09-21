@@ -48,6 +48,13 @@ class HomeController extends Controller
                 ->count(),
         ];
 
+        $featuredAgent = User::whereIn('role', ['agent', 'landlord'])
+            ->where('is_verified', true)
+            ->whereHas('properties', fn ($q) => $q->published())
+            ->withCount(['properties' => fn ($q) => $q->published()])
+            ->orderByDesc('properties_count')
+            ->first();
+
         $dbInteriors = HeroSlide::type('interior')->active()->ordered()->get();
 
         $interiors = $dbInteriors->isNotEmpty()
@@ -73,6 +80,6 @@ class HomeController extends Controller
             'cta' => $plan['price'] ? 'Start listing' : 'Talk to us',
         ])->values();
 
-        return view('home', compact('categories', 'listings', 'interiors', 'pricing', 'heroSlides', 'siteStats', 'trustHeading', 'trustLede'));
+        return view('home', compact('categories', 'listings', 'interiors', 'pricing', 'heroSlides', 'siteStats', 'trustHeading', 'trustLede', 'featuredAgent'));
     }
 }
