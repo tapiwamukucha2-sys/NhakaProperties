@@ -11,6 +11,9 @@ class BrowseController extends Controller
     {
         $category = $request->query('category');
         $location = trim((string) $request->query('location'));
+        $budget = $request->query('budget');
+
+        [$minPrice, $maxPrice] = $this->parseBudget($budget);
 
         $listings = Property::published()
             ->when($category, fn ($q) => $q->where('category', $category))
@@ -19,6 +22,8 @@ class BrowseController extends Controller
                     ->orWhere('title', 'like', "%{$location}%")
                     ->orWhere('province', 'like', "%{$location}%");
             }))
+            ->when($minPrice !== null, fn ($q) => $q->where('price', '>=', $minPrice))
+            ->when($maxPrice !== null, fn ($q) => $q->where('price', '<=', $maxPrice))
             ->latest()
             ->get();
 
@@ -29,6 +34,18 @@ class BrowseController extends Controller
             'categories' => $categories,
             'activeCategory' => $category,
             'location' => $location,
+            'budget' => $budget,
         ]);
+    }
+
+    private function parseBudget(?string $budget): array
+    {
+        return match ($budget) {
+            '0-200' => [0, 200],
+            '200-600' => [200, 600],
+            '600-1500' => [600, 1500],
+            '1500+' => [1500, null],
+            default => [null, null],
+        };
     }
 }

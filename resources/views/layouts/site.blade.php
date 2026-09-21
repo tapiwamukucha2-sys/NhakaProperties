@@ -259,7 +259,7 @@
       </div>
     </div>
     <form class="newsletter-form" id="newsletterForm">
-      <input type="email" placeholder="Your email address" required>
+      <input type="email" name="email" placeholder="Your email address" required>
       <button type="submit">Subscribe</button>
     </form>
   </div>
@@ -313,9 +313,9 @@
     <div class="foot-bottom">
       <span>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</span>
       <div style="display:flex; gap:20px;">
-        <a href="#">Terms</a>
-        <a href="#">Privacy</a>
-        <a href="#">Cookies</a>
+        <a href="{{ route('terms') }}">Terms</a>
+        <a href="{{ route('privacy') }}">Privacy</a>
+        <a href="{{ route('cookies') }}">Cookies</a>
         <a href="{{ route('admin.login') }}">Admin Login</a>
       </div>
     </div>
@@ -339,14 +339,35 @@
     document.getElementById('scrollTopBtn').classList.toggle('visible', window.scrollY > 400);
   });
 
-  // Newsletter popup toast
+  // Newsletter subscribe
   document.getElementById('newsletterForm').addEventListener('submit', function (e) {
     e.preventDefault();
+    const form = this;
     const toast = document.getElementById('toast');
-    toast.textContent = "You're subscribed — welcome to " + @json(config('app.name')) + "!";
-    toast.classList.add('show');
-    this.reset();
-    setTimeout(() => toast.classList.remove('show'), 3200);
+    const email = form.email.value;
+
+    fetch(@json(route('newsletter.store')), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': @json(csrf_token()),
+      },
+      body: JSON.stringify({ email }),
+    })
+      .then(res => {
+        toast.textContent = res.ok
+          ? "You're subscribed — welcome to " + @json(config('app.name')) + "!"
+          : "Something went wrong — please check that email address.";
+        toast.classList.add('show');
+        if (res.ok) form.reset();
+        setTimeout(() => toast.classList.remove('show'), 3200);
+      })
+      .catch(() => {
+        toast.textContent = "Something went wrong — please try again.";
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3200);
+      });
   });
 </script>
 

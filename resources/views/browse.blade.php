@@ -13,15 +13,27 @@
 
 <section style="padding:50px 0 80px;">
   <div class="wrap">
-    <form method="GET" style="margin-bottom:24px; max-width:420px;">
+    <form method="GET" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px;">
+      @if ($activeCategory)
+        <input type="hidden" name="category" value="{{ $activeCategory }}">
+      @endif
       <input type="text" name="location" value="{{ $location }}" placeholder="Search by location or title..."
-             style="width:100%; padding:13px 16px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:14.5px;">
+             style="flex:1; min-width:220px; padding:13px 16px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:14.5px;">
+      <select name="budget" onchange="this.form.submit()"
+              style="padding:13px 16px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:14.5px;">
+        <option value="">Any price</option>
+        <option value="0-200" @selected($budget === '0-200')>Under $200</option>
+        <option value="200-600" @selected($budget === '200-600')>$200 – $600</option>
+        <option value="600-1500" @selected($budget === '600-1500')>$600 – $1,500</option>
+        <option value="1500+" @selected($budget === '1500+')>$1,500+</option>
+      </select>
+      <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
     <div class="filter-row">
-      <a href="{{ route('browse', array_filter(['location' => $location])) }}" class="filter-chip {{ !$activeCategory ? 'active' : '' }}">All</a>
+      <a href="{{ route('browse', array_filter(['location' => $location, 'budget' => $budget])) }}" class="filter-chip {{ !$activeCategory ? 'active' : '' }}">All</a>
       @foreach ($categories as $value => $label)
-        <a href="{{ route('browse', array_filter(['category' => $value, 'location' => $location])) }}"
+        <a href="{{ route('browse', array_filter(['category' => $value, 'location' => $location, 'budget' => $budget])) }}"
            class="filter-chip {{ $activeCategory === $value ? 'active' : '' }}">{{ $label }}</a>
       @endforeach
     </div>

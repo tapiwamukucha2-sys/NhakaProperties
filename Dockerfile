@@ -1,6 +1,6 @@
-FROM php:8.3-fpm-alpine AS base
+FROM php:8.3-fpm AS base
 
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     nginx \
     supervisor \
     git \
@@ -9,12 +9,16 @@ RUN apk add --no-cache \
     libzip-dev \
     zip \
     unzip \
-    oniguruma-dev \
-    postgresql-dev \
-    icu-dev \
-    nodejs \
-    npm \
-    && docker-php-ext-install pdo pdo_pgsql pgsql mbstring zip exif pcntl bcmath gd intl
+    libonig-dev \
+    libpq-dev \
+    libicu-dev \
+    ca-certificates \
+    gnupg \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install pdo pdo_pgsql pgsql mbstring zip exif pcntl bcmath gd intl \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 

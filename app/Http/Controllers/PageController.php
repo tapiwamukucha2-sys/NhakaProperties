@@ -40,4 +40,19 @@ class PageController extends Controller
     {
         return view('about');
     }
+
+    public function terms()
+    {
+        return view('legal', ['title' => 'Terms of Service', 'section' => 'terms']);
+    }
+
+    public function privacy()
+    {
+        return view('legal', ['title' => 'Privacy Policy', 'section' => 'privacy']);
+    }
+
+    public function cookies()
+    {
+        return view('legal', ['title' => 'Cookie Policy', 'section' => 'cookies']);
+    }
 }

@@ -102,9 +102,9 @@
       </form>
 
       <div class="stats-strip">
-        <span><b>2,480</b> verified listings</span>
-        <span><b>8</b> provinces covered</span>
-        <span><b>640+</b> registered agents & landlords</span>
+        <span><b>{{ number_format($siteStats['listings']) }}</b> verified listing{{ $siteStats['listings'] === 1 ? '' : 's' }}</span>
+        <span><b>{{ $siteStats['provinces'] }}</b> province{{ $siteStats['provinces'] === 1 ? '' : 's' }} covered</span>
+        <span><b>{{ $siteStats['agents'] }}</b> registered agent{{ $siteStats['agents'] === 1 ? '' : 's' }} & landlords</span>
       </div>
     </div>
   </div>

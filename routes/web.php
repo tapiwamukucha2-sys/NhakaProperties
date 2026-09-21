@@ -3,6 +3,7 @@
 use App\Http\Controllers\BrowseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ListingController;
+use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
@@ -13,6 +14,10 @@ Route::get('/browse', [BrowseController::class, 'index'])->name('browse');
 Route::get('/map', [PageController::class, 'map'])->name('map');
 Route::get('/agents', [PageController::class, 'agents'])->name('agents');
 Route::get('/about', [PageController::class, 'about'])->name('about');
+Route::get('/terms', [PageController::class, 'terms'])->name('terms');
+Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
+Route::get('/cookies', [PageController::class, 'cookies'])->name('cookies');
+Route::post('/newsletter', [NewsletterController::class, 'store'])->name('newsletter.store');
 Route::get('/listings/{slug}', [ListingController::class, 'show'])->name('listings.show');
 
 Route::prefix('admin')->name('admin.')->group(function () {

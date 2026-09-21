@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HeroSlide;
 use App\Models\Property;
+use App\Models\User;
 
 class HomeController extends Controller
 {
@@ -31,6 +32,14 @@ class HomeController extends Controller
         })->values();
 
         $listings = Property::published()->latest()->take(6)->get();
+
+        $siteStats = [
+            'listings' => Property::published()->count(),
+            'provinces' => Property::published()->distinct('province')->count('province'),
+            'agents' => User::whereIn('role', ['agent', 'landlord'])
+                ->whereHas('properties', fn ($q) => $q->published())
+                ->count(),
+        ];
 
         $dbInteriors = HeroSlide::type('interior')->active()->ordered()->get();
 
@@ -68,6 +77,6 @@ class HomeController extends Controller
             ],
         ];
 
-        return view('home', compact('categories', 'listings', 'interiors', 'pricing', 'heroSlides'));
+        return view('home', compact('categories', 'listings', 'interiors', 'pricing', 'heroSlides', 'siteStats'));
     }
 }
