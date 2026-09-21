@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\StoresImages;
 use App\Http\Controllers\Controller;
 use App\Models\HeroSlide;
 use Illuminate\Http\Request;
@@ -9,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 
 class HeroSlideController extends Controller
 {
+    use StoresImages;
+
     private const TYPES = ['hero' => 'Hero background', 'interior' => 'Interior showcase'];
 
     public function index(Request $request)
@@ -48,7 +51,7 @@ class HeroSlideController extends Controller
 
         HeroSlide::create([
             'type' => $data['type'],
-            'image_path' => $request->file('image')->store('hero-slides', 'public'),
+            'image_path' => $this->storeUploadedImage($request->file('image'), 'hero-slides', 'image'),
             'caption_price' => $data['caption_price'] ?? null,
             'caption_location' => $data['caption_location'] ?? null,
             'sort_order' => $data['sort_order'] ?? 0,

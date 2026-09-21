@@ -92,12 +92,15 @@ Health check is `/up`.
 
 ### Gotchas that have bitten before
 
-- **Uploaded photos do not survive a redeploy.** Render's free tier has no persistent disk.
-  `render.yaml` sets `FILESYSTEM_DISK=r2` expecting Cloudflare R2, but the `AWS_*` values are
-  `sync: false` — they must be set by hand in the Render dashboard. `config/filesystems.php`
-  only switches the `public` disk to S3/R2 when `FILESYSTEM_DISK === 'r2'`, and that disk is
-  configured with `throw => false, report => false`, so **a missing bucket fails silently rather
-  than erroring**. If uploads vanish in production, check those env vars first.
+- **Uploaded photos do not survive a redeploy** unless R2 is actually configured. Render's free
+  tier has no persistent disk. `render.yaml` sets `FILESYSTEM_DISK=r2`, but the `AWS_*` values
+  are `sync: false` — they must be set by hand in the Render dashboard.
+  `config/filesystems.php` now switches the `public` disk to R2 only when
+  **every** credential is present, and falls back to the local disk otherwise, so a half-set
+  environment degrades to "photos until next deploy" instead of losing them outright.
+  All disks run with `throw => true, report => true`: a storage failure is logged and raised,
+  never swallowed. Uploads go through the `StoresImages` trait, which turns a failure into a
+  validation message rather than a 500. Covered by `tests/Feature/ImageStorageTest.php`.
 - Render's free tier sleeps. The first request after idle takes ~50s.
 - The app sits behind Render's proxy; `TrustProxies` is already configured so HTTPS is detected.
 

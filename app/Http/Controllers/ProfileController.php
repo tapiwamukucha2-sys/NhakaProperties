@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\StoresImages;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,6 +13,8 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    use StoresImages;
+
     /**
      * Display the user's profile form.
      */
@@ -53,7 +56,7 @@ class ProfileController extends Controller
             Storage::disk('public')->delete($user->avatar_path);
         }
 
-        $path = $request->file('avatar')->store('avatars', 'public');
+        $path = $this->storeUploadedImage($request->file('avatar'), 'avatars', 'avatar');
 
         $user->update(['avatar_path' => $path]);
 

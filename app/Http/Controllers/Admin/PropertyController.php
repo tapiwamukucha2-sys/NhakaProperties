@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\StoresImages;
 use App\Http\Controllers\Controller;
 use App\Models\Property;
 use Illuminate\Http\Request;
@@ -9,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 
 class PropertyController extends Controller
 {
+    use StoresImages;
+
     public function index(Request $request)
     {
         $this->authorizeAdmin($request);
@@ -77,9 +80,7 @@ class PropertyController extends Controller
 
         $existingImages = array_values(array_diff($existingImages, $toRemove));
 
-        $newImages = collect($request->file('images', []))
-            ->map(fn ($file) => $file->store('properties', 'public'))
-            ->all();
+        $newImages = $this->storeUploadedImages($request->file('images', []), 'properties', 'images');
 
         $data['images'] = array_merge($existingImages, $newImages);
 

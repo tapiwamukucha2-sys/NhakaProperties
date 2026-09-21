@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\StoresImages;
 use App\Models\Property;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -9,6 +10,8 @@ use Illuminate\Validation\Rule;
 
 class PropertyController extends Controller
 {
+    use StoresImages;
+
     public function dashboard(Request $request)
     {
         $properties = $request->user()->properties()->latest()->get();
@@ -120,9 +123,7 @@ class PropertyController extends Controller
             return [];
         }
 
-        return collect($request->file('images'))
-            ->map(fn ($file) => $file->store('properties', 'public'))
-            ->all();
+        return $this->storeUploadedImages($request->file('images'), 'properties', 'images');
     }
 
     private function authorizeOwner(Property $property): void
