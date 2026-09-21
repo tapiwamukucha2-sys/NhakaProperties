@@ -21,6 +21,19 @@
         </div>
     </x-slot>
 
+    @php $sub = Auth::user()->activeSubscription(); @endphp
+    @if ($sub)
+        <div style="background:rgba(18,58,107,0.08); border-bottom:1px solid rgba(18,58,107,0.2); padding:10px 0; text-align:center; font-size:13.5px; font-weight:600; color:var(--forest);">
+            {{ ucfirst($sub->plan) }} plan active — {{ Auth::user()->activeListingCount() }} / {{ $sub->listingLimit() }} listings used
+            <a href="{{ route('subscribe.index') }}" style="text-decoration:underline; margin-left:6px;">Manage plan</a>
+        </div>
+    @else
+        <div style="background:rgba(192,138,40,0.1); border-bottom:1px solid rgba(192,138,40,0.25); padding:10px 0; text-align:center; font-size:13.5px; font-weight:600; color:var(--gold);">
+            No active plan — you need a subscription to list properties.
+            <a href="{{ route('subscribe.index') }}" style="text-decoration:underline; margin-left:6px;">Choose a plan</a>
+        </div>
+    @endif
+
     <div class="py-10">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
 

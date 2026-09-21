@@ -244,7 +244,7 @@
             <li>{{ $feature }}</li>
           @endforeach
         </ul>
-        <a class="btn" href="{{ route('register') }}">{{ $plan['cta'] }}</a>
+        <a class="btn" href="{{ auth()->check() ? route('subscribe.index') : route('register') }}">{{ $plan['cta'] }}</a>
       </div>
       @endforeach
     </div>

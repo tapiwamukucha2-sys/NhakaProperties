@@ -14,6 +14,7 @@
                     <a href="{{ route('agents') }}" class="border-b-2 pb-1 {{ request()->routeIs('agents') ? 'border-[--ink]' : 'border-transparent hover:border-[--ink]' }}">Agents</a>
                     <a href="{{ route('about') }}" class="border-b-2 pb-1 {{ request()->routeIs('about') ? 'border-[--ink]' : 'border-transparent hover:border-[--ink]' }}">About</a>
                     <a href="{{ route('dashboard') }}" class="border-b-2 pb-1 {{ request()->routeIs('dashboard') ? 'border-[--ink]' : 'border-transparent hover:border-[--ink]' }}">Dashboard</a>
+                    <a href="{{ route('subscribe.index') }}" class="border-b-2 pb-1 {{ request()->routeIs('subscribe.*') ? 'border-[--ink]' : 'border-transparent hover:border-[--ink]' }}">Billing</a>
                     @if (Auth::user()->role === 'admin')
                         <a href="{{ route('admin.properties.index') }}" class="border-b-2 pb-1 {{ request()->routeIs('admin.properties.*') ? 'border-[--ink]' : 'border-transparent hover:border-[--ink]' }}">Approvals</a>
                         <a href="{{ route('admin.hero-slides.index') }}" class="border-b-2 pb-1 {{ request()->routeIs('admin.hero-slides.*') ? 'border-[--ink]' : 'border-transparent hover:border-[--ink]' }}">Hero Slides</a>

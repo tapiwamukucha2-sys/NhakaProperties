@@ -36,9 +36,34 @@ class User extends Authenticatable
         return $this->hasMany(Property::class);
     }
 
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
     public function isAgentOrLandlord(): bool
     {
         return in_array($this->role, ['agent', 'landlord']);
+    }
+
+    public function activeSubscription(): ?Subscription
+    {
+        return $this->subscriptions()->active()->latest()->first();
+    }
+
+    public function listingLimit(): int
+    {
+        return $this->activeSubscription()?->listingLimit() ?? 0;
+    }
+
+    public function activeListingCount(): int
+    {
+        return $this->properties()->whereIn('status', ['pending', 'published'])->count();
+    }
+
+    public function canCreateListing(): bool
+    {
+        return $this->activeListingCount() < $this->listingLimit();
     }
 
     public function avatarUrl(): string

@@ -23,13 +23,21 @@ class PropertyController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        if (! $request->user()->canCreateListing()) {
+            return redirect()->route('subscribe.index')->with('status', 'You\'ve reached your plan\'s listing limit — choose a plan to list more properties.');
+        }
+
         return view('properties.create');
     }
 
     public function store(Request $request)
     {
+        if (! $request->user()->canCreateListing()) {
+            return redirect()->route('subscribe.index')->with('status', 'You\'ve reached your plan\'s listing limit — choose a plan to list more properties.');
+        }
+
         $data = $this->validateProperty($request);
 
         $data['images'] = $this->storeImages($request);

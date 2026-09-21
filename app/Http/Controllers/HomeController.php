@@ -6,6 +6,7 @@ use App\Models\HeroSlide;
 use App\Models\Property;
 use App\Models\SiteSetting;
 use App\Models\User;
+use App\Support\SubscriptionPlans;
 
 class HomeController extends Controller
 {
@@ -62,26 +63,15 @@ class HomeController extends Controller
                 ['image' => 'images/interiors/twin-room.jpg', 'caption' => 'Student twin room'],
             ])->map(fn ($i) => ['image_url' => asset($i['image']), 'caption' => $i['caption']]);
 
-        $pricing = [
-            [
-                'tier' => 'Starter', 'amount' => '$5', 'period' => '/ month', 'featured' => false,
-                'desc' => 'For a landlord with one or two properties to fill.',
-                'features' => ['Up to 2 active listings', 'WhatsApp inquiry forwarding', 'Basic listing analytics'],
-                'cta' => 'Start listing',
-            ],
-            [
-                'tier' => 'Agent', 'amount' => '$18', 'period' => '/ month', 'featured' => true,
-                'desc' => 'For agents actively managing a portfolio.',
-                'features' => ['Up to 25 active listings', 'Featured placement rotation', 'Verified agent badge', 'Lead inbox with reply tracking'],
-                'cta' => 'Start listing',
-            ],
-            [
-                'tier' => 'Developer', 'amount' => 'Custom', 'period' => '', 'featured' => false,
-                'desc' => 'For new developments and large agencies.',
-                'features' => ['Unlimited listings', 'Dedicated project page', 'Homepage & category placement', 'Account manager'],
-                'cta' => 'Talk to us',
-            ],
-        ];
+        $pricing = collect(SubscriptionPlans::all())->map(fn ($plan) => [
+            'tier' => $plan['name'],
+            'amount' => $plan['price'] ? '$'.$plan['price'] : 'Custom',
+            'period' => $plan['period'] ? '/ '.$plan['period'] : '',
+            'featured' => $plan['featured'] ?? false,
+            'desc' => $plan['desc'],
+            'features' => $plan['features'],
+            'cta' => $plan['price'] ? 'Start listing' : 'Talk to us',
+        ])->values();
 
         return view('home', compact('categories', 'listings', 'interiors', 'pricing', 'heroSlides', 'siteStats', 'trustHeading', 'trustLede'));
     }
