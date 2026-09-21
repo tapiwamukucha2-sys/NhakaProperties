@@ -47,6 +47,13 @@
             @endif
         </div>
 
+        <div>
+            <x-input-label for="phone" :value="__('WhatsApp / phone number')" />
+            <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full" :value="old('phone', $user->phone)" autocomplete="tel" placeholder="e.g. 0776651578" />
+            <p class="mt-1 text-sm text-gray-500">Shown to buyers as "WhatsApp {{ ucfirst($user->role) }}" on your listings. Leave blank and enquiries will go to your email instead.</p>
+            <x-input-error class="mt-2" :messages="$errors->get('phone')" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 

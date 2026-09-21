@@ -114,15 +114,31 @@
   </div>
 
   <div class="sidebar">
+    @php
+      $agentPhone = preg_replace('/[^0-9]/', '', $property->user->phone ?? '');
+      if ($agentPhone !== '' && $agentPhone[0] === '0') {
+          $agentPhone = '263'.substr($agentPhone, 1);
+      }
+      $whatsappMessage = urlencode('Hi, I\'m interested in '.$property->title.' on '.config('app.name').'.');
+    @endphp
     <div class="price-card">
       <div class="price">{{ $property->displayPrice() }}</div>
       <div class="stack">
-        @auth
-          <a href="https://wa.me/263776651578?text={{ urlencode('Hi, I\'m interested in '.$property->title.' on '.config('app.name').'.') }}" target="_blank" rel="noopener" class="btn btn-whatsapp">WhatsApp Agent</a>
+        @if ($agentPhone !== '')
+          @auth
+            <a href="https://wa.me/{{ $agentPhone }}?text={{ $whatsappMessage }}" target="_blank" rel="noopener" class="btn btn-whatsapp">WhatsApp {{ ucfirst($property->user->role) }}</a>
+          @else
+            <a href="{{ route('login') }}" class="btn btn-primary">Login to Enquire</a>
+            <a href="https://wa.me/{{ $agentPhone }}?text={{ $whatsappMessage }}" target="_blank" rel="noopener" class="btn btn-whatsapp">WhatsApp {{ ucfirst($property->user->role) }}</a>
+          @endauth
         @else
-          <a href="{{ route('login') }}" class="btn btn-primary">Login to Enquire</a>
-          <a href="https://wa.me/263776651578?text={{ urlencode('Hi, I\'m interested in '.$property->title.' on '.config('app.name').'.') }}" target="_blank" rel="noopener" class="btn btn-whatsapp">WhatsApp Agent</a>
-        @endauth
+          @auth
+            <a href="mailto:{{ $property->user->email }}?subject={{ urlencode('Enquiry about '.$property->title) }}" class="btn btn-whatsapp">Email {{ ucfirst($property->user->role) }}</a>
+          @else
+            <a href="{{ route('login') }}" class="btn btn-primary">Login to Enquire</a>
+            <a href="mailto:{{ $property->user->email }}?subject={{ urlencode('Enquiry about '.$property->title) }}" class="btn btn-whatsapp">Email {{ ucfirst($property->user->role) }}</a>
+          @endauth
+        @endif
       </div>
       <div class="stats-row">
         <div><b>{{ $property->created_at->diffForHumans() }}</b>Listed</div>
