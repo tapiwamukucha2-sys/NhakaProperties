@@ -71,7 +71,7 @@
       <input type="hidden" name="method" id="methodInput" value="ecocash" required>
 
       <div id="ecocashInstructions" class="pay-instructions">
-        Send your plan amount via EcoCash to <strong>+263 77 665 1578</strong> (Tanaka / {{ config('app.name') }}), then fill in the reference below and submit.
+        Send your plan amount via EcoCash to <strong>+263 77 665 1578</strong> ({{ config('app.name') }}), then fill in the reference below and submit.
       </div>
       <div id="paypalInstructions" class="pay-instructions" style="display:none;">
         Send your plan amount via PayPal to <strong>support@nhaka.co.zw</strong>, then fill in the transaction reference below and submit.
