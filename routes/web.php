@@ -7,6 +7,7 @@ use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -17,7 +18,8 @@ Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
 Route::get('/cookies', [PageController::class, 'cookies'])->name('cookies');
-Route::post('/newsletter', [NewsletterController::class, 'store'])->name('newsletter.store');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::post('/newsletter', [NewsletterController::class, 'store'])->name('newsletter.store')->middleware('throttle:5,1');
 Route::get('/listings/{slug}', [ListingController::class, 'show'])->name('listings.show');
 
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -59,6 +61,9 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/agents', [\App\Http\Controllers\Admin\AgentController::class, 'index'])->name('agents.index');
         Route::post('/agents/{user}/toggle-verified', [\App\Http\Controllers\Admin\AgentController::class, 'toggleVerified'])->name('agents.toggle-verified');
+
+        Route::get('/settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'index'])->name('settings.index');
+        Route::put('/settings', [\App\Http\Controllers\Admin\SiteSettingController::class, 'update'])->name('settings.update');
     });
 });
 

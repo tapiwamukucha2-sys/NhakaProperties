@@ -27,13 +27,28 @@
         <option value="600-1500" @selected($budget === '600-1500')>$600 – $1,500</option>
         <option value="1500+" @selected($budget === '1500+')>$1,500+</option>
       </select>
+      <select name="bedrooms" onchange="this.form.submit()"
+              style="padding:13px 16px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:14.5px;">
+        <option value="">Any bedrooms</option>
+        <option value="1" @selected($bedrooms == '1')>1+ bed</option>
+        <option value="2" @selected($bedrooms == '2')>2+ beds</option>
+        <option value="3" @selected($bedrooms == '3')>3+ beds</option>
+        <option value="4" @selected($bedrooms == '4')>4+ beds</option>
+      </select>
+      <select name="sort" onchange="this.form.submit()"
+              style="padding:13px 16px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:14.5px;">
+        <option value="newest" @selected($sort === 'newest')>Newest first</option>
+        <option value="price_asc" @selected($sort === 'price_asc')>Price: Low to High</option>
+        <option value="price_desc" @selected($sort === 'price_desc')>Price: High to Low</option>
+      </select>
       <button type="submit" class="btn btn-primary">Search</button>
     </form>
 
+    @php $preserved = ['location' => $location, 'budget' => $budget, 'bedrooms' => $bedrooms, 'sort' => $sort]; @endphp
     <div class="filter-row">
-      <a href="{{ route('browse', array_filter(['location' => $location, 'budget' => $budget])) }}" class="filter-chip {{ !$activeCategory ? 'active' : '' }}">All</a>
+      <a href="{{ route('browse', array_filter($preserved)) }}" class="filter-chip {{ !$activeCategory ? 'active' : '' }}">All</a>
       @foreach ($categories as $value => $label)
-        <a href="{{ route('browse', array_filter(['category' => $value, 'location' => $location, 'budget' => $budget])) }}"
+        <a href="{{ route('browse', array_filter(array_merge($preserved, ['category' => $value]))) }}"
            class="filter-chip {{ $activeCategory === $value ? 'active' : '' }}">{{ $label }}</a>
       @endforeach
     </div>

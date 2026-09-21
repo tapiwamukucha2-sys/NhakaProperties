@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HeroSlide;
 use App\Models\Property;
+use App\Models\SiteSetting;
 use App\Models\User;
 
 class HomeController extends Controller
@@ -17,12 +18,17 @@ class HomeController extends Controller
             : collect(['estate-day.jpg', 'estate-night.jpg', 'estate-dusk.jpg'])
                 ->map(fn ($file) => ['url' => asset('images/hero/'.$file), 'price' => null, 'location' => null]);
 
+        $defaults = SiteSetting::defaults();
+
         $categoryMeta = [
-            'rent' => ['title' => 'Rent a home', 'desc' => 'Rooms, cottages, flats and full houses — updated daily.', 'style' => 'cat-1'],
-            'buy' => ['title' => 'Buy a house', 'desc' => 'Freehold and cluster homes across every province.', 'style' => 'cat-2'],
-            'land' => ['title' => 'Land & stands', 'desc' => 'Residential and agricultural stands, title-verified.', 'style' => 'cat-3'],
-            'commercial' => ['title' => 'Commercial', 'desc' => 'Shops, offices and warehouses ready to lease or buy.', 'style' => 'cat-4'],
+            'rent' => ['title' => 'Rent a home', 'desc' => SiteSetting::get('category_rent_desc', $defaults['category_rent_desc']), 'style' => 'cat-1'],
+            'buy' => ['title' => 'Buy a house', 'desc' => SiteSetting::get('category_buy_desc', $defaults['category_buy_desc']), 'style' => 'cat-2'],
+            'land' => ['title' => 'Land & stands', 'desc' => SiteSetting::get('category_land_desc', $defaults['category_land_desc']), 'style' => 'cat-3'],
+            'commercial' => ['title' => 'Commercial', 'desc' => SiteSetting::get('category_commercial_desc', $defaults['category_commercial_desc']), 'style' => 'cat-4'],
         ];
+
+        $trustHeading = SiteSetting::get('trust_heading', $defaults['trust_heading']);
+        $trustLede = SiteSetting::get('trust_lede', $defaults['trust_lede']);
 
         $categories = collect($categoryMeta)->map(function ($meta, $slug) {
             return array_merge($meta, [
@@ -77,6 +83,6 @@ class HomeController extends Controller
             ],
         ];
 
-        return view('home', compact('categories', 'listings', 'interiors', 'pricing', 'heroSlides', 'siteStats'));
+        return view('home', compact('categories', 'listings', 'interiors', 'pricing', 'heroSlides', 'siteStats', 'trustHeading', 'trustLede'));
     }
 }

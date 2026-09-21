@@ -188,8 +188,8 @@
   <div class="wrap">
     <div class="trust-grid">
       <div>
-        <h2>Verified means someone actually checked.</h2>
-        <p class="lede">Fake listings and disappearing "agents" are the biggest complaint about property hunting in Zimbabwe. Every verified badge on {{ config('app.name') }} means we've confirmed the agent's ID and, for sale listings, the title documents.</p>
+        <h2>{{ $trustHeading }}</h2>
+        <p class="lede">{{ $trustLede }}</p>
         <div class="trust-points">
           <div class="trust-point">
             <span class="num">01</span>

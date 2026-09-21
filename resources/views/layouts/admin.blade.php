@@ -99,6 +99,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6" stroke-linecap="round"/><circle cx="18" cy="9" r="2.4"/><path d="M15.8 14.2c2.6.4 4.7 2.3 4.7 5.8" stroke-linecap="round"/></svg>
       Agents & Users
     </a>
+    <a href="{{ route('admin.settings.index') }}" class="{{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h7" stroke-linecap="round"/></svg>
+      Homepage Copy
+    </a>
   </nav>
   <div class="foot">
     <form action="{{ route('admin.logout') }}" method="POST">

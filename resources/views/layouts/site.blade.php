@@ -3,7 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>@yield('title', config('app.name').' — Find Property Across Zimbabwe')</title>
+@php
+    $metaTitle = trim($__env->yieldContent('title')) ?: config('app.name').' — Find Property Across Zimbabwe';
+    $metaDescription = trim($__env->yieldContent('description')) ?: 'Search verified rentals, houses, stands and commercial space across Zimbabwe — direct from landlords and registered agents.';
+    $metaImage = trim($__env->yieldContent('image')) ?: asset('images/hero/estate-day.jpg');
+@endphp
+<title>{{ $metaTitle }}</title>
+<meta name="description" content="{{ $metaDescription }}">
+<meta property="og:site_name" content="{{ config('app.name') }}">
+<meta property="og:title" content="{{ $metaTitle }}">
+<meta property="og:description" content="{{ $metaDescription }}">
+<meta property="og:image" content="{{ $metaImage }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ url()->current() }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ $metaTitle }}">
+<meta name="twitter:description" content="{{ $metaDescription }}">
+<meta name="twitter:image" content="{{ $metaImage }}">
+<link rel="canonical" href="{{ url()->current() }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>

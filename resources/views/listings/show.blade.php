@@ -1,6 +1,8 @@
 @extends('layouts.site')
 
-@section('title', $property->title.' — '.config('app.name'))
+@section('title', $property->title.' — '.$property->location.' | '.config('app.name'))
+@section('description', Str::limit($property->description ?: ($property->title.' in '.$property->location.'. '.$property->displayPrice().'.'), 155))
+@section('image', $property->imageUrls()[0] ?? asset('images/hero/estate-day.jpg'))
 
 @section('styles')
   .content{padding:20px 0 80px; display:grid; grid-template-columns:1.7fr 1fr; gap:36px; align-items:start;}
@@ -152,9 +154,13 @@
         <a href="https://wa.me/?text={{ urlencode(request()->url()) }}" target="_blank" rel="noopener" aria-label="Share on WhatsApp">
           <svg style="width:17px;height:17px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Z"/></svg>
         </a>
-        <a href="#" aria-label="Share on Facebook">
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->url()) }}" target="_blank" rel="noopener" aria-label="Share on Facebook">
           <svg style="width:17px;height:17px;" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.8h2.6l.4-3H13.5V8.3c0-.9.2-1.5 1.5-1.5h1.6V4.1C16.3 4 15.3 4 14.2 4c-2.4 0-4 1.5-4 4.1v2.1H7.6v3h2.6V21h3.3Z"/></svg>
         </a>
+        <button type="button" onclick="navigator.clipboard.writeText(window.location.href); const t=document.getElementById('toast'); t.textContent='Link copied!'; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200);" aria-label="Copy link"
+                style="width:38px; height:38px; border-radius:50%; background:var(--paper); display:flex; align-items:center; justify-content:center; border:1px solid var(--line); cursor:pointer;">
+          <svg style="width:16px;height:16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.5 1.5" stroke-linecap="round"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.5-1.5" stroke-linecap="round"/></svg>
+        </button>
       </div>
     </div>
   </div>

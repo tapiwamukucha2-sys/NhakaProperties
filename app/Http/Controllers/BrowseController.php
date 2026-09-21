@@ -12,6 +12,8 @@ class BrowseController extends Controller
         $category = $request->query('category');
         $location = trim((string) $request->query('location'));
         $budget = $request->query('budget');
+        $bedrooms = $request->query('bedrooms');
+        $sort = $request->query('sort', 'newest');
 
         [$minPrice, $maxPrice] = $this->parseBudget($budget);
 
@@ -24,7 +26,10 @@ class BrowseController extends Controller
             }))
             ->when($minPrice !== null, fn ($q) => $q->where('price', '>=', $minPrice))
             ->when($maxPrice !== null, fn ($q) => $q->where('price', '<=', $maxPrice))
-            ->latest()
+            ->when($bedrooms, fn ($q) => $q->where('bedrooms', '>=', (int) $bedrooms))
+            ->when($sort === 'price_asc', fn ($q) => $q->orderBy('price', 'asc'))
+            ->when($sort === 'price_desc', fn ($q) => $q->orderBy('price', 'desc'))
+            ->when($sort === 'newest' || ! $sort, fn ($q) => $q->latest())
             ->get();
 
         $categories = ['rent' => 'Rent', 'buy' => 'Buy', 'land' => 'Land', 'commercial' => 'Commercial'];
@@ -35,6 +40,8 @@ class BrowseController extends Controller
             'activeCategory' => $category,
             'location' => $location,
             'budget' => $budget,
+            'bedrooms' => $bedrooms,
+            'sort' => $sort,
         ]);
     }
 

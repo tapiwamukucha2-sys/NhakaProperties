@@ -1,2 +1,9 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /properties/create
+Disallow: /properties/*/edit
+Disallow: /profile
+
+Sitemap: /sitemap.xml
