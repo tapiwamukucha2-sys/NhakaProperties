@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\HeroSlide;
 use App\Models\Property;
+use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -22,6 +23,7 @@ class DashboardController extends Controller
             'totalUsers' => User::count(),
             'heroSlideCount' => HeroSlide::count(),
             'activeHeroSlideCount' => HeroSlide::active()->count(),
+            'pendingSubscriptions' => Subscription::where('status', 'pending')->count(),
             'recentProperties' => Property::with('user')->latest()->take(5)->get(),
         ]);
     }

@@ -27,6 +27,12 @@
     <div class="sub">Active / total</div>
     <a href="{{ route('admin.hero-slides.index') }}">Manage slides →</a>
   </div>
+  <div class="stat-card">
+    <div class="label">Pending subscriptions</div>
+    <div class="num" style="color:{{ $pendingSubscriptions > 0 ? 'var(--gold)' : 'var(--ink)' }};">{{ $pendingSubscriptions }}</div>
+    <div class="sub">Awaiting payment verification</div>
+    <a href="{{ route('admin.subscriptions.index') }}">Review now →</a>
+  </div>
 </div>
 
 <div class="stat-grid" style="grid-template-columns:repeat(2,1fr);">
