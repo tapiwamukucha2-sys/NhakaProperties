@@ -23,9 +23,25 @@ class RegistrationTest extends TestCase
             'email' => 'test@example.com',
             'password' => 'password',
             'password_confirmation' => 'password',
+            'role' => 'landlord',
         ]);
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
+        $this->assertSame('landlord', auth()->user()->role);
+    }
+
+    public function test_registration_requires_a_valid_role(): void
+    {
+        $response = $this->post('/register', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'role' => 'administrator',
+        ]);
+
+        $response->assertSessionHasErrors('role');
+        $this->assertGuest();
     }
 }

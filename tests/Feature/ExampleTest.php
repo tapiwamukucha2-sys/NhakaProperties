@@ -2,11 +2,14 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
+    // The homepage reads hero slides and listings, so it needs a migrated schema.
+    use RefreshDatabase;
+
     /**
      * A basic test example.
      */
