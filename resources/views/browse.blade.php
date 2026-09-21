@@ -63,8 +63,8 @@
         <a class="card" href="{{ route('listings.show', $listing->slug) }}">
           <div class="thumb">
             @if ($listing->imageUrls())
-              <img src="{{ $listing->imageUrls()[0] }}" alt="{{ $listing->title }}"
-                   width="400" height="200" loading="lazy" decoding="async">
+              <x-responsive-img :src="$listing->imageUrls()[0]" :alt="$listing->title"
+                                 sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 380px" :width="400" :height="200" />
             @endif
             @if ($listing->is_verified)
               <span class="badge"><span class="v"></span>Verified</span>

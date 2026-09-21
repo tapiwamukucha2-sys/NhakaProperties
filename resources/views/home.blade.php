@@ -62,7 +62,9 @@
 
 <section class="hero" id="heroSection">
   @foreach ($heroSlides as $i => $slide)
-    <div class="hero-bg-slide {{ $i === 0 ? 'active' : '' }}" style="background-image:url('{{ $slide['url'] }}')"></div>
+    {{-- Decorative: the hero headline carries the meaning, so these stay out of the a11y tree. --}}
+    <div class="hero-bg-slide {{ $i === 0 ? 'active' : '' }}" aria-hidden="true"
+         style="{{ \App\View\Components\ResponsiveImg::backgroundCss($slide['url']) }}"></div>
   @endforeach
   <div class="hero-overlay"></div>
   <div class="hero-dots" id="heroDots"></div>
@@ -141,8 +143,8 @@
       <a class="card" href="{{ route('listings.show', $listing->slug) }}">
         <div class="thumb">
           @if ($listing->imageUrls())
-            <img src="{{ $listing->imageUrls()[0] }}" alt="{{ $listing->title }}"
-                 width="400" height="200" loading="lazy" decoding="async">
+            <x-responsive-img :src="$listing->imageUrls()[0]" :alt="$listing->title"
+                              sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 380px" :width="400" :height="200" />
           @endif
           @if ($listing->is_verified)
             <span class="badge"><span class="v"></span>Verified</span>
@@ -175,7 +177,8 @@
     <div class="interior-scroll">
       @foreach ($interiors as $item)
         <div class="interior-item">
-          <img src="{{ $item['image_url'] }}" alt="{{ $item['caption'] }}" loading="lazy">
+          <x-responsive-img :src="$item['image_url']" :alt="$item['caption']"
+                         sizes="240px" :width="240" :height="180" />
           @if ($item['caption'])
             <div class="cap">{{ $item['caption'] }}</div>
           @endif

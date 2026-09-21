@@ -21,6 +21,54 @@
 <meta name="twitter:description" content="{{ $metaDescription }}">
 <meta name="twitter:image" content="{{ $metaImage }}">
 <link rel="canonical" href="{{ url()->current() }}">
+@php
+    // Built inside @php on purpose: Blade parses the
+    // '@type' keys in this array as directives otherwise.
+    $nhakaSchema = [
+    '@context' => 'https://schema.org',
+    '@graph' => [
+        [
+            '@type' => 'RealEstateAgent',
+            '@id' => url('/').'#organization',
+            'name' => config('app.name'),
+            'url' => url('/'),
+            'description' => 'Verified rental and sale property listings across Zimbabwe, direct from landlords and registered agents.',
+            'areaServed' => ['@type' => 'Country', 'name' => 'Zimbabwe'],
+            'address' => [
+                '@type' => 'PostalAddress',
+                'addressLocality' => 'Harare',
+                'addressCountry' => 'ZW',
+            ],
+            'contactPoint' => [
+                '@type' => 'ContactPoint',
+                'contactType' => 'customer support',
+                'telephone' => '+263776651578',
+                'email' => 'support@nhaka.co.zw',
+                'areaServed' => 'ZW',
+                'availableLanguage' => ['en'],
+            ],
+        ],
+        [
+            '@type' => 'WebSite',
+            '@id' => url('/').'#website',
+            'url' => url('/'),
+            'name' => config('app.name'),
+            'publisher' => ['@id' => url('/').'#organization'],
+            'inLanguage' => 'en',
+            'potentialAction' => [
+                '@type' => 'SearchAction',
+                'target' => [
+                    '@type' => 'EntryPoint',
+                    'urlTemplate' => route('browse').'?location={search_term_string}',
+                ],
+                'query-input' => 'required name=search_term_string',
+            ],
+        ],
+    ],
+];
+@endphp
+<script type="application/ld+json">{!! json_encode($nhakaSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+@stack('schema')
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -66,6 +114,11 @@
     --dur-1:160ms; --dur-2:240ms; --dur-3:380ms;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
+  /* Visible to screen readers, not on screen. */
+  .sr-only{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+    overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+  }
   html{scroll-behavior:smooth;}
   body{
     background:var(--paper);
@@ -88,6 +141,17 @@
                border-color var(--dur-1) var(--ease), transform var(--dur-2) var(--ease),
                box-shadow var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease);
   }
+
+  /* ---------- SKIP LINK (WCAG 2.4.1) ----------
+     Off-screen until focused, so keyboard users can jump the nav. */
+  .skip-link{
+    position:absolute; left:50%; transform:translate(-50%,-140%);
+    z-index:100; background:var(--forest-dark); color:#fff;
+    padding:12px 20px; border-radius:0 0 var(--r-sm) var(--r-sm);
+    font-weight:600; font-size:14px; text-decoration:none;
+    transition:transform var(--dur-1) var(--ease);
+  }
+  .skip-link:focus{transform:translate(-50%,0);}
 
   /* ---------- FOCUS VISIBILITY (WCAG 2.4.7 / 2.4.11) ----------
      Two-tone ring so it stays visible on both paper and navy surfaces. */
@@ -351,6 +415,8 @@
 </head>
 <body>
 
+<a class="skip-link" href="#main">Skip to main content</a>
+
 <div class="topbar">
   <div class="wrap">
     <div class="contacts">
@@ -403,7 +469,9 @@
   </div>
 </header>
 
+<main id="main">
 @yield('content')
+</main>
 
 <div class="newsletter">
   <div class="wrap">
@@ -417,7 +485,8 @@
       </div>
     </div>
     <form class="newsletter-form" id="newsletterForm">
-      <input type="email" name="email" placeholder="Your email address" required>
+      <label for="newsletterEmail" class="sr-only">Your email address</label>
+      <input type="email" id="newsletterEmail" name="email" placeholder="Your email address" required>
       <button type="submit">Subscribe</button>
     </form>
   </div>

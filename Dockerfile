@@ -6,6 +6,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     libpng-dev \
+    libjpeg62-turbo-dev \
+    libwebp-dev \
+    libavif-dev \
+    libfreetype6-dev \
     libzip-dev \
     zip \
     unzip \
@@ -17,6 +21,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y --no-install-recommends nodejs \
     && docker-php-ext-configure intl \
+    # gd defaults to PNG only. Without these flags imagecreatefromjpeg(),
+    # imagewebp() and imageavif() do not exist, so uploaded photos cannot be
+    # resized or re-encoded in production.
+    && docker-php-ext-configure gd --with-jpeg --with-webp --with-avif --with-freetype \
     && docker-php-ext-install pdo pdo_pgsql pgsql mbstring zip exif pcntl bcmath gd intl \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 

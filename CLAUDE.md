@@ -78,10 +78,26 @@ Adding or changing a token means editing all three.
   - `.reveal` starts at `opacity:0`, so never wrap content in it that must survive JS failing.
     The `no-js` → `js` swap in `<head>` is what guards this — don't move it to the end of `<body>`.
 - **Touch targets are 44×44 minimum** — buttons, chips, pagination, social icons, share row.
-- **Listing images:** grid thumbnails get `loading="lazy" decoding="async"` plus explicit
-  `width`/`height`. The listing-detail hero is the LCP — it gets `fetchpriority="high"` and is
-  never lazy.
+- **Always use `<x-responsive-img>` for images, never a bare `<img>`.** It emits a `<picture>`
+  with AVIF and WebP `srcset` when derivatives exist beside the original, and falls back to a
+  plain `<img>` for user uploads that have none. Pass a real `sizes` value — a wrong one makes
+  the browser pick the wrong file. The listing-detail hero is the LCP: `loading="eager"` plus
+  `fetchpriority="high"`. Everything else stays lazy.
+- **After adding anything to `public/images/`, run `php tools/optimise-images.php`** and commit
+  the generated `-<width>.avif` / `-<width>.webp` files. Originals are kept as the fallback and
+  are never modified. `--force` re-encodes everything.
+- **CSS background photos** use `ResponsiveImg::backgroundCss($url)`, which emits a plain
+  `url()` then an `image-set()` override.
+- **Structured data:** `RealEstateAgent` + `WebSite` ship sitewide from `layouts/site`;
+  listing pages push `RealEstateListing` + `BreadcrumbList` onto the `@stack('schema')`.
+  Build every schema array inside a `@php` block — Blade parses the `'@type'` keys as
+  directives otherwise, and the page dies with a parse error at runtime (not at compile time,
+  so `view:cache` will not catch it).
 - **Icons are inline SVG.** No emoji, no icon fonts.
+- **Landmarks:** the skip link and `<main id="main">` live in `layouts/site`. Don't nest a
+  second `<main>` in a page section.
+- **Every form control needs a real label.** Use `.sr-only` when the design has no room for a
+  visible one; a placeholder is not a label.
 
 ---
 

@@ -4,6 +4,64 @@
 @section('description', Str::limit($property->description ?: ($property->title.' in '.$property->location.'. '.$property->displayPrice().'.'), 155))
 @section('image', $property->imageUrls()[0] ?? asset('images/hero/estate-day.jpg'))
 
+@push('schema')
+@php
+    // Built inside @php on purpose: Blade parses the
+    // '@type' keys in this array as directives otherwise.
+    $nhakaSchema = [
+    '@context' => 'https://schema.org',
+    '@graph' => [
+        [
+            '@type' => 'RealEstateListing',
+            '@id' => url()->current().'#listing',
+            'url' => url()->current(),
+            'name' => $property->title,
+            'description' => Str::limit(strip_tags((string) $property->description) ?: $property->title, 300),
+            'datePosted' => optional($property->created_at)->toAtomString(),
+            'image' => $property->imageUrls(),
+            'isPartOf' => ['@id' => url('/').'#website'],
+            'provider' => ['@id' => url('/').'#organization'],
+            'about' => array_filter([
+                '@type' => $property->category === 'land' ? 'LandForm' : ($property->category === 'commercial' ? 'CommercialProperty' : 'SingleFamilyResidence'),
+                'name' => $property->title,
+                'numberOfBedrooms' => $property->bedrooms ?: null,
+                'numberOfBathroomsTotal' => $property->bathrooms ?: null,
+                'floorSize' => $property->size_sqm ? [
+                    '@type' => 'QuantitativeValue',
+                    'value' => $property->size_sqm,
+                    'unitCode' => 'MTK',
+                ] : null,
+                'address' => [
+                    '@type' => 'PostalAddress',
+                    'addressLocality' => $property->location,
+                    'addressRegion' => $property->province,
+                    'addressCountry' => 'ZW',
+                ],
+            ]),
+            'offers' => [
+                '@type' => 'Offer',
+                'price' => (float) $property->price,
+                'priceCurrency' => 'USD',
+                'availability' => 'https://schema.org/InStock',
+                'businessFunction' => $property->category === 'rent'
+                    ? 'http://purl.org/goodrelations/v1#LeaseOut'
+                    : 'http://purl.org/goodrelations/v1#Sell',
+            ],
+        ],
+        [
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => route('home')],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => 'Browse', 'item' => route('browse')],
+                ['@type' => 'ListItem', 'position' => 3, 'name' => $property->title, 'item' => url()->current()],
+            ],
+        ],
+    ],
+];
+@endphp
+<script type="application/ld+json">{!! json_encode($nhakaSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+@endpush
+
 @section('styles')
   .content{padding:20px 0 80px; display:grid; grid-template-columns:1.7fr 1fr; gap:36px; align-items:start;}
   @media(max-width:900px){ .content{grid-template-columns:1fr;} }
@@ -75,8 +133,9 @@
         <span class="gallery-badge">✓ Verified</span>
       @endif
       @if ($gallery)
-        <img src="{{ $gallery[0] }}" alt="{{ $property->title }}" id="galleryMainImg"
-             width="900" height="420" decoding="async" fetchpriority="high">
+        <x-responsive-img :src="$gallery[0]" :alt="$property->title" id="galleryMainImg"
+                         sizes="(max-width: 900px) 100vw, 760px"
+                         :width="900" :height="420" loading="eager" fetchpriority="high" />
       @endif
     </div>
     @if (count($gallery) > 1)
