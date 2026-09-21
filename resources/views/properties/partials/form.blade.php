@@ -81,7 +81,9 @@
         <div class="grid grid-cols-3 sm:grid-cols-4 gap-3 mb-4">
             @foreach ($property->images as $path)
                 <label class="relative block rounded-lg overflow-hidden border border-[--line] cursor-pointer group">
-                    <img src="{{ Illuminate\Support\Facades\Storage::disk('public')->url($path) }}" class="w-full h-24 object-cover">
+                    <img src="{{ Illuminate\Support\Facades\Storage::disk('public')->url($path) }}"
+                         alt="Uploaded property photo" loading="lazy" decoding="async"
+                         class="w-full h-24 object-cover">
                     <span class="absolute inset-0 bg-black/0 group-has-[:checked]:bg-black/60 flex items-center justify-center transition">
                         <span class="hidden group-has-[:checked]:inline text-white text-xs font-bold">Remove</span>
                     </span>

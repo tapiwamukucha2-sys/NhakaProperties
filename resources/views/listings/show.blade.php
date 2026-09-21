@@ -12,8 +12,13 @@
   .gallery-main img{width:100%; height:100%; object-fit:cover;}
   .gallery-badge{position:absolute; top:16px; left:16px; background:var(--gold); color:var(--forest-dark); font-size:12px; font-weight:700; padding:6px 12px; border-radius:20px;}
   .gallery-thumbs{display:flex; gap:10px; margin-top:10px;}
-  .gallery-thumbs img{width:88px; height:66px; object-fit:cover; border-radius:8px; cursor:pointer; border:2px solid transparent;}
-  .gallery-thumbs img.active{border-color:var(--forest);}
+  .gallery-thumbs .thumb-btn{
+    padding:0; background:none; border:2px solid transparent; border-radius:8px;
+    cursor:pointer; line-height:0; overflow:hidden; flex-shrink:0;
+  }
+  .gallery-thumbs .thumb-btn img{width:88px; height:66px; object-fit:cover; display:block;}
+  .gallery-thumbs .thumb-btn:hover{border-color:var(--line-strong);}
+  .gallery-thumbs .thumb-btn.active{border-color:var(--forest);}
 
   .title-block{margin-top:26px;}
   .title-block .cat{display:inline-block; background:var(--forest); color:#fff; font-size:12px; font-weight:700; padding:4px 12px; border-radius:20px; margin-bottom:12px; text-transform:capitalize;}
@@ -70,13 +75,19 @@
         <span class="gallery-badge">✓ Verified</span>
       @endif
       @if ($gallery)
-        <img src="{{ $gallery[0] }}" alt="{{ $property->title }}" id="galleryMainImg">
+        <img src="{{ $gallery[0] }}" alt="{{ $property->title }}" id="galleryMainImg"
+             width="900" height="420" decoding="async" fetchpriority="high">
       @endif
     </div>
     @if (count($gallery) > 1)
       <div class="gallery-thumbs">
         @foreach ($gallery as $i => $img)
-          <img src="{{ $img }}" class="{{ $i === 0 ? 'active' : '' }}" onclick="document.getElementById('galleryMainImg').src=this.src; document.querySelectorAll('.gallery-thumbs img').forEach(el=>el.classList.remove('active')); this.classList.add('active');">
+          <button type="button" class="thumb-btn {{ $i === 0 ? 'active' : '' }}"
+                  aria-label="Show photo {{ $i + 1 }} of {{ count($gallery) }}"
+                  @if ($i === 0) aria-current="true" @endif
+                  data-full="{{ $img }}">
+            <img src="{{ $img }}" alt="" width="88" height="66" loading="lazy" decoding="async">
+          </button>
         @endforeach
       </div>
     @endif
@@ -149,7 +160,8 @@
 
     <div class="agent-card">
       <div class="top">
-        <img src="{{ $property->user->avatarUrl() }}" alt="{{ $property->user->name }}" class="avatar" style="object-fit:cover;">
+        <img src="{{ $property->user->avatarUrl() }}" alt="{{ $property->user->name }}" class="avatar"
+             width="56" height="56" loading="lazy" decoding="async" style="object-fit:cover;">
         <div>
           <h4>{{ $property->user->name }}</h4>
           <div class="role">{{ ucfirst($property->user->role) }}</div>
@@ -174,7 +186,7 @@
           <svg style="width:17px;height:17px;" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.8h2.6l.4-3H13.5V8.3c0-.9.2-1.5 1.5-1.5h1.6V4.1C16.3 4 15.3 4 14.2 4c-2.4 0-4 1.5-4 4.1v2.1H7.6v3h2.6V21h3.3Z"/></svg>
         </a>
         <button type="button" onclick="navigator.clipboard.writeText(window.location.href); const t=document.getElementById('toast'); t.textContent='Link copied!'; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200);" aria-label="Copy link"
-                style="width:38px; height:38px; border-radius:50%; background:var(--paper); display:flex; align-items:center; justify-content:center; border:1px solid var(--line); cursor:pointer;">
+                style="width:44px; height:44px; border-radius:50%; background:var(--paper); display:flex; align-items:center; justify-content:center; border:1px solid var(--line); cursor:pointer;">
           <svg style="width:16px;height:16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.5 1.5" stroke-linecap="round"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.5-1.5" stroke-linecap="round"/></svg>
         </button>
       </div>
@@ -182,4 +194,26 @@
   </div>
 </div>
 
+@endsection
+
+@section('scripts')
+<script>
+  (function () {
+    const main = document.getElementById('galleryMainImg');
+    const thumbs = document.querySelectorAll('.gallery-thumbs .thumb-btn');
+    if (!main || !thumbs.length) return;
+
+    thumbs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        main.src = btn.dataset.full;
+        thumbs.forEach(other => {
+          other.classList.remove('active');
+          other.removeAttribute('aria-current');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-current', 'true');
+      });
+    });
+  })();
+</script>
 @endsection

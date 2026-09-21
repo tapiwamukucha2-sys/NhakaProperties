@@ -31,7 +31,8 @@
       @forelse ($agents as $agent)
         <div class="agent-card">
           <div class="top">
-            <img src="{{ $agent->avatarUrl() }}" alt="{{ $agent->name }}" class="avatar" style="object-fit:cover;">
+            <img src="{{ $agent->avatarUrl() }}" alt="{{ $agent->name }}" class="avatar"
+                 width="88" height="88" loading="lazy" decoding="async" style="object-fit:cover;">
             <div>
               <h3>{{ $agent->name }}</h3>
               <div class="role">{{ ucfirst($agent->role) }}</div>

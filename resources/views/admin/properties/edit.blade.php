@@ -106,7 +106,8 @@
       <div class="img-grid">
         @foreach ($property->images as $path)
           <label>
-            <img src="{{ Illuminate\Support\Facades\Storage::disk('public')->url($path) }}">
+            <img src="{{ Illuminate\Support\Facades\Storage::disk('public')->url($path) }}"
+                 alt="Property photo" loading="lazy" decoding="async">
             <input type="checkbox" name="remove_images[]" value="{{ $path }}" style="position:absolute; top:6px; right:6px; z-index:2;">
             <span class="remove-overlay">Remove</span>
           </label>

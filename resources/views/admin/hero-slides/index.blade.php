@@ -43,7 +43,9 @@
       <tbody>
         @foreach ($slides as $slide)
           <tr>
-            <td><img src="{{ $slide->url() }}" style="width:96px; height:64px; object-fit:cover; border-radius:6px; border:1px solid var(--line);"></td>
+            <td><img src="{{ $slide->url() }}" alt="Hero slide preview" width="96" height="64"
+                     loading="lazy" decoding="async"
+                     style="width:96px; height:64px; object-fit:cover; border-radius:6px; border:1px solid var(--line);"></td>
             <td>
               <div style="font-weight:600;">{{ $slide->caption_price ?: '—' }}</div>
               <div style="font-size:12px; color:rgba(19,28,43,0.55); margin-top:2px;">{{ $slide->caption_location ?: 'No location caption' }}</div>

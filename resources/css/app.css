@@ -5,6 +5,7 @@
 @tailwind utilities;
 
 :root{
+  /* brand core */
   --ink:#131C2B;
   --paper:#F2F5F9;
   --paper-2:#FFFFFF;
@@ -14,6 +15,25 @@
   --gold-light:#DBAE5A;
   --brick:#3E6FA6;
   --line: rgba(19,28,43,0.12);
+
+  /* derived semantic text (>= 4.5:1 on paper) */
+  --ink-soft: rgba(19,28,43,0.72);
+  --ink-mute: rgba(19,28,43,0.68);
+  --line-strong: rgba(19,28,43,0.18);
+  --tint-forest: rgba(18,58,107,0.08);
+  --tint-gold: rgba(192,138,40,0.12);
+
+  /* radius */
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-pill:999px;
+
+  /* elevation */
+  --sh-1:0 1px 2px rgba(19,28,43,0.05), 0 2px 8px -4px rgba(19,28,43,0.10);
+  --sh-2:0 2px 4px rgba(19,28,43,0.05), 0 12px 24px -12px rgba(19,28,43,0.18);
+  --sh-3:0 4px 8px rgba(19,28,43,0.06), 0 24px 48px -20px rgba(19,28,43,0.28);
+
+  /* motion */
+  --ease:cubic-bezier(0.22,0.61,0.36,1);
+  --dur-1:160ms; --dur-2:240ms; --dur-3:380ms;
 }
 
 body{
@@ -24,4 +44,20 @@ body{
 
 .font-serif-brand{
   font-family:'Fraunces', serif;
+}
+
+/* Keyboard focus must stay visible on the Tailwind (dashboard/admin) side too. */
+:focus-visible{
+  outline:2px solid var(--gold);
+  outline-offset:2px;
+}
+:focus:not(:focus-visible){outline:none;}
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+    scroll-behavior:auto !important;
+  }
 }

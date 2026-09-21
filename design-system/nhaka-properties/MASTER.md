@@ -6,6 +6,57 @@
 
 ---
 
+> ### ⚠ READ THIS FIRST — the sections below are the *generated* baseline.
+> Where this box and the generated sections disagree, **this box wins**. It records what is
+> actually implemented in `resources/views/layouts/site.blade.php` and `resources/css/app.css`.
+
+## As Implemented (authoritative)
+
+Nhaka already had a coherent identity before this system was generated, and it was kept.
+Three generated recommendations were deliberately **not** adopted:
+
+| Generated | Implemented | Why |
+|---|---|---|
+| Cinzel / Josefin Sans | **Fraunces / Archivo** | Cinzel is an all-caps Roman inscriptional face — it reads poorly at UI sizes. Josefin Sans has a small x-height that hurts body legibility. Fraunces (variable optical size) + Archivo carry the same premium tone and stay readable in listing cards. |
+| Teal `#0F766E` + `#F0FDFA` ground | **Navy `#123A6B` + gold `#C08A28` on `#F2F5F9`** | The navy/gold pairing was the existing brand and reads as "trust + property" at least as well. Changing it would have cost brand recognition for no measurable gain. |
+| Glassmorphism | **Soft layered elevation** (`--sh-1/2/3`) | Frosted panels over listing photography fight text contrast (the style's own rating is `risk:conditional`), and `backdrop-filter` is expensive on the low-end Android hardware that dominates the Zimbabwe market. |
+
+**Kept from the generated system:** the Hero-Centric pattern, the sticky-nav CTA, the standard
+motion tier (scroll stagger, 300–450ms), the standard density spacing scale, and the
+pre-delivery accessibility checklist.
+
+### Token source of truth
+Tokens live in `:root` in `resources/views/layouts/site.blade.php` (public site) and are
+mirrored in `resources/css/app.css` (Tailwind dashboard/admin side). **Keep the two in sync.**
+`tailwind.config.js` re-exports them as utilities (`text-ink-soft`, `bg-paper-raised`,
+`shadow-brand-2`, `font-brand`, …).
+
+| Group | Tokens |
+|---|---|
+| Brand | `--ink` `--paper` `--paper-2` `--forest` `--forest-dark` `--gold` `--gold-light` `--brick` |
+| Text (all ≥ 4.5:1) | `--ink-soft` (6.4:1) `--ink-mute` (5.9:1) `--on-dark-soft` `--on-dark-mute` |
+| Line / tint | `--line` `--line-strong` `--tint-forest` `--tint-gold` |
+| Spacing | `--space-1`…`--space-7` (4 → 64px) |
+| Radius | `--r-sm` `--r-md` `--r-lg` `--r-xl` `--r-pill` |
+| Elevation | `--sh-1` `--sh-2` `--sh-3` `--sh-gold` |
+| Motion | `--ease` `--ease-out-back` `--dur-1/2/3` (160/240/380ms) |
+
+### Rules that are load-bearing
+- **Gold is the conversion colour.** `.btn-gold` is for the single primary CTA (nav "Get Started",
+  hero search). Navy `.btn-primary` is for everything else. Do not add a third gold button to a view.
+- **Never write a raw hex in a component.** Use a token; add one if it is missing.
+- **Focus rings are non-negotiable.** `:focus-visible` is defined globally in both stylesheets.
+  Never write a bare `outline:none` — use `:focus:not(:focus-visible)`.
+- **Motion is opt-out.** Every animation sits behind `prefers-reduced-motion`. Above-the-fold
+  content uses `.reveal-now` (animates on load); below-the-fold uses `.reveal` (IntersectionObserver).
+  `.reveal` starts at `opacity:0`, so it must never wrap content that has to survive JS failing —
+  the `no-js` → `js` swap in `<head>` guards this.
+- **Touch targets are 44×44 minimum** (buttons, chips, pagination, social icons, share row).
+- **Listing images:** grid thumbnails are `loading="lazy" decoding="async"` with explicit
+  `width`/`height`; the listing-detail hero is `fetchpriority="high"` and never lazy (it is the LCP).
+
+---
+
 **Project:** Nhaka Properties
 **Generated:** 2026-09-21 22:45:44
 **Category:** Real Estate/Property

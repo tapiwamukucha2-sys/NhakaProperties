@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,6 +25,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
+    /* --- brand core (unchanged identity) --- */
     --ink:#131C2B;
     --paper:#F2F5F9;
     --paper-2:#FFFFFF;
@@ -34,6 +35,35 @@
     --gold-light:#DBAE5A;
     --brick:#3E6FA6;
     --line: rgba(19,28,43,0.12);
+
+    /* --- derived semantic text (all >= 4.5:1 on paper) --- */
+    --ink-soft: rgba(19,28,43,0.72);
+    --ink-mute: rgba(19,28,43,0.68);
+    --on-dark-soft: rgba(255,255,255,0.86);
+    --on-dark-mute: rgba(255,255,255,0.72);
+
+    /* --- surface & line --- */
+    --line-strong: rgba(19,28,43,0.18);
+    --tint-forest: rgba(18,58,107,0.08);
+    --tint-gold: rgba(192,138,40,0.12);
+
+    /* --- spacing scale (density 5 / standard: 16-64) --- */
+    --space-1:4px;  --space-2:8px;  --space-3:16px;
+    --space-4:24px; --space-5:32px; --space-6:48px; --space-7:64px;
+
+    /* --- radius --- */
+    --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:22px; --r-pill:999px;
+
+    /* --- elevation (layered, soft, navy-tinted) --- */
+    --sh-1:0 1px 2px rgba(19,28,43,0.05), 0 2px 8px -4px rgba(19,28,43,0.10);
+    --sh-2:0 2px 4px rgba(19,28,43,0.05), 0 12px 24px -12px rgba(19,28,43,0.18);
+    --sh-3:0 4px 8px rgba(19,28,43,0.06), 0 24px 48px -20px rgba(19,28,43,0.28);
+    --sh-gold:0 10px 26px -12px rgba(192,138,40,0.55);
+
+    /* --- motion --- */
+    --ease:cubic-bezier(0.22,0.61,0.36,1);
+    --ease-out-back:cubic-bezier(0.34,1.4,0.64,1);
+    --dur-1:160ms; --dur-2:240ms; --dur-3:380ms;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html{scroll-behavior:smooth;}
@@ -54,13 +84,53 @@
   img{max-width:100%; display:block;}
   .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
   a, button, select, input, .btn, .cat-card, .card, .price-card{
-    transition:color .18s ease, background-color .18s ease, border-color .18s ease, transform .18s ease, box-shadow .18s ease, opacity .3s ease;
+    transition:color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease),
+               border-color var(--dur-1) var(--ease), transform var(--dur-2) var(--ease),
+               box-shadow var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease);
   }
+
+  /* ---------- FOCUS VISIBILITY (WCAG 2.4.7 / 2.4.11) ----------
+     Two-tone ring so it stays visible on both paper and navy surfaces. */
+  :focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:2px;
+    border-radius:var(--r-sm);
+  }
+  .topbar :focus-visible, .page-hero :focus-visible, .trust :focus-visible,
+  footer :focus-visible, .newsletter :focus-visible, .hero :focus-visible{
+    outline-color:var(--gold-light);
+    box-shadow:0 0 0 4px rgba(11,37,69,0.55);
+  }
+  /* Only suppress the ring for pointer users, never for keyboard. */
+  :focus:not(:focus-visible){outline:none;}
+
+  /* ---------- SCROLL REVEAL ----------
+     Fires when the element enters the viewport (was: on page load regardless). */
   @keyframes fadeUp{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
-  .reveal{animation:fadeUp .7s ease both;}
-  .reveal-delay-1{animation-delay:.08s;}
-  .reveal-delay-2{animation-delay:.16s;}
-  .reveal-delay-3{animation-delay:.24s;}
+  .reveal{opacity:0;}
+  .reveal.in{animation:fadeUp var(--dur-3) var(--ease) both;}
+  /* Above-the-fold content animates on load, not on intersection. */
+  .reveal-now{opacity:0; animation:fadeUp var(--dur-3) var(--ease) both;}
+  .reveal-delay-1.in{animation-delay:.08s;}
+  .reveal-delay-2.in{animation-delay:.16s;}
+  .reveal-delay-3.in{animation-delay:.24s;}
+  /* If JS never runs, content must still be visible. */
+  .no-js .reveal, html:not(.js) .reveal{opacity:1;}
+
+  /* ---------- REDUCED MOTION (WCAG 2.3.3) ---------- */
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *, *::before, *::after{
+      animation-duration:.01ms !important;
+      animation-iteration-count:1 !important;
+      transition-duration:.01ms !important;
+      scroll-behavior:auto !important;
+    }
+    .reveal{opacity:1 !important; animation:none !important;}
+    /* Kill lift/zoom transforms, keep colour feedback */
+    .card:hover, .price-card:hover, .cat-card:hover, .btn-primary:hover{transform:none !important;}
+    .card:hover .thumb img{transform:none !important;}
+  }
 
   /* ---------- TOP BAR ---------- */
   .topbar{background:var(--forest-dark); color:rgba(255,255,255,0.85); font-size:13px;}
@@ -68,25 +138,45 @@
   .topbar .contacts{display:flex; align-items:center; gap:20px; flex-wrap:wrap;}
   .topbar .contacts a{display:inline-flex; align-items:center; gap:6px; color:rgba(255,255,255,0.85);}
   .topbar .contacts a:hover{color:#fff;}
-  .topbar .social{display:flex; align-items:center; gap:14px;}
-  .topbar .social span{color:rgba(255,255,255,0.6); font-weight:600; letter-spacing:.02em; margin-right:2px;}
-  .topbar .social a{color:rgba(255,255,255,0.85); display:inline-flex;}
-  .topbar .social a:hover{color:var(--gold-light);}
+  .topbar .social{display:flex; align-items:center; gap:2px;}
+  .topbar .social span{color:var(--on-dark-mute); font-weight:600; letter-spacing:.02em; margin-right:8px;}
+  /* 36px box + 4px bar padding = 44px effective touch target */
+  .topbar .social a{
+    color:rgba(255,255,255,0.85); display:inline-flex; align-items:center; justify-content:center;
+    width:36px; height:36px; border-radius:var(--r-pill);
+  }
+  .topbar .social a:hover{color:var(--gold-light); background:rgba(255,255,255,0.10);}
   .icon{width:15px; height:15px; display:block;}
 
   /* ---------- HEADER ---------- */
-  header{padding:22px 0 20px; border-bottom:1px solid var(--line); background:var(--paper-2);}
-  header .wrap{display:flex; align-items:center; justify-content:space-between;}
+  header{
+    padding:18px 0 16px; border-bottom:1px solid var(--line); background:var(--paper-2);
+    position:sticky; top:0; z-index:40;
+    transition:box-shadow var(--dur-2) var(--ease), padding var(--dur-2) var(--ease);
+  }
+  header.stuck{box-shadow:var(--sh-2); padding:11px 0 10px;}
+  header .wrap{display:flex; align-items:center; justify-content:space-between; gap:var(--space-4);}
   .logo{font-family:'Fraunces', serif; font-size:24px; font-weight:700; display:flex; align-items:center; gap:10px;}
   nav{display:flex; align-items:center; gap:30px;}
   nav .links{display:flex; gap:28px; font-size:15px; font-weight:500;}
   nav .links a{padding-bottom:4px; border-bottom:1px solid transparent;}
   nav .links a:hover, nav .links a.active{border-color:var(--ink);}
-  .btn{display:inline-block; padding:12px 22px; border-radius:6px; font-weight:600; font-size:14.5px; cursor:pointer; border:none;}
-  .btn-primary{background:var(--forest); color:#fff;}
-  .btn-primary:hover{transform:translateY(-1px); box-shadow:0 8px 18px rgba(18,58,107,0.28); background:var(--forest-dark);}
-  .btn-ghost{border:1px solid var(--ink); background:transparent;}
-  .btn-ghost:hover{background:var(--ink); color:#fff;}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    min-height:44px; padding:12px 22px; border-radius:var(--r-sm);
+    font-weight:600; font-size:14.5px; cursor:pointer; border:none;
+    font-family:inherit; text-align:center; white-space:nowrap;
+  }
+  .btn-primary{background:var(--forest); color:#fff; box-shadow:var(--sh-1);}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 22px -8px rgba(18,58,107,0.45); background:var(--forest-dark);}
+  .btn-primary:active{transform:translateY(0); box-shadow:var(--sh-1);}
+  .btn-ghost{border:1px solid var(--line-strong); background:transparent; color:var(--ink);}
+  .btn-ghost:hover{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .btn-ghost:active{transform:translateY(1px);}
+  /* Gold CTA - reserved for the single primary conversion action */
+  .btn-gold{background:var(--gold); color:var(--forest-dark); box-shadow:var(--sh-1);}
+  .btn-gold:hover{background:var(--gold-light); transform:translateY(-2px); box-shadow:var(--sh-gold);}
+  .btn-gold:active{transform:translateY(0);}
   .btn-row{display:flex; align-items:center; gap:10px;}
   @media(max-width:860px){ nav .links{display:none;} }
 
@@ -98,38 +188,75 @@
   .breadcrumb a:hover{color:#fff;}
 
   /* ---------- CATEGORY / CARD SHARED ---------- */
-  .section-head{display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:30px; gap:20px; flex-wrap:wrap;}
-  .section-head h2{font-size:clamp(28px,3.4vw,38px);}
-  .section-head .sub{color:rgba(19,28,43,0.65); font-size:15px; margin-top:6px;}
+  .section-head{display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:var(--space-5); gap:var(--space-4); flex-wrap:wrap;}
+  .section-head h2{font-size:clamp(28px,3.4vw,38px); position:relative;}
+  .section-head > div > h2::before{
+    content:""; display:block; width:38px; height:3px; border-radius:2px;
+    background:var(--gold); margin-bottom:14px;
+  }
+  .section-head .sub{color:var(--ink-soft); font-size:15px; margin-top:8px; max-width:56ch;}
 
-  .listing-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:22px;}
+  .listing-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:var(--space-4);}
   @media(max-width:900px){ .listing-grid{grid-template-columns:1fr 1fr;} }
   @media(max-width:600px){ .listing-grid{grid-template-columns:1fr;} }
 
-  .card{background:var(--paper-2); border:1px solid var(--line); border-radius:12px; overflow:hidden; display:block;}
-  .card:hover{transform:translateY(-3px); box-shadow:0 16px 30px -20px rgba(19,28,43,0.4);}
-  .card .thumb{height:170px; position:relative; background:linear-gradient(150deg, var(--forest), #4a6b58); overflow:hidden;}
-  .card .thumb img{width:100%; height:100%; object-fit:cover;}
+  .card{
+    background:var(--paper-2); border:1px solid var(--line); border-radius:var(--r-lg);
+    overflow:hidden; display:block; box-shadow:var(--sh-1); position:relative;
+  }
+  .card:hover{transform:translateY(-4px); box-shadow:var(--sh-3); border-color:var(--line-strong);}
+  .card .thumb{
+    height:200px; position:relative; overflow:hidden;
+    background:linear-gradient(150deg, var(--forest), #4a6b58);
+  }
+  .card .thumb img{width:100%; height:100%; object-fit:cover; transition:transform var(--dur-3) var(--ease);}
+  .card:hover .thumb img{transform:scale(1.06);}
+  /* Scrim: guarantees the price tag stays legible over any photo */
+  .card .thumb::after{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(0deg, rgba(11,20,35,0.62) 0%, rgba(11,20,35,0.12) 32%, rgba(11,20,35,0) 58%);
+  }
+  @media(max-width:600px){ .card .thumb{height:220px;} }
   .card:nth-child(2) .thumb{background:linear-gradient(150deg,var(--brick),#7fa3cc);}
   .card:nth-child(3) .thumb{background:linear-gradient(150deg,var(--gold),var(--gold-light));}
   .card:nth-child(4) .thumb{background:linear-gradient(150deg,#2c5a92,var(--forest));}
   .card:nth-child(5) .thumb{background:linear-gradient(150deg,#7fa3cc,var(--brick));}
   .card:nth-child(6) .thumb{background:linear-gradient(150deg,var(--gold-light),var(--gold));}
-  .badge{position:absolute; top:12px; left:12px; background:rgba(255,255,255,0.95); font-size:11.5px; font-weight:700; padding:5px 10px; border-radius:20px; display:flex; align-items:center; gap:5px;}
-  .badge .v{width:6px; height:6px; border-radius:50%; background:var(--forest);}
-  .price-tag{position:absolute; bottom:12px; left:12px; background:var(--ink); color:#fff; font-weight:700; font-size:14.5px; padding:6px 12px; border-radius:8px;}
-  .card .body{padding:18px 18px 20px;}
-  .card h3{font-size:17px; font-weight:600; font-family:'Archivo',sans-serif;}
-  .card .loc{font-size:13.5px; color:rgba(19,28,43,0.6); margin-top:4px;}
-  .card .meta{margin-top:14px; padding-top:14px; border-top:1px solid var(--line); display:flex; gap:16px; font-size:13px; color:rgba(19,28,43,0.7);}
+  .badge{
+    position:absolute; top:12px; left:12px; z-index:2;
+    background:rgba(255,255,255,0.96); color:var(--forest);
+    font-size:11.5px; font-weight:700; letter-spacing:.02em;
+    padding:6px 11px; border-radius:var(--r-pill);
+    display:inline-flex; align-items:center; gap:5px; box-shadow:var(--sh-1);
+  }
+  .badge .v{width:6px; height:6px; border-radius:50%; background:var(--gold); flex-shrink:0;}
+  .price-tag{
+    position:absolute; bottom:12px; left:12px; z-index:2;
+    color:#fff; font-family:'Fraunces',serif; font-weight:600; font-size:19px;
+    letter-spacing:-0.01em; text-shadow:0 1px 8px rgba(11,20,35,0.5);
+  }
+  .card .body{padding:var(--space-3) var(--space-3) 18px;}
+  .card h3{
+    font-size:17px; font-weight:600; font-family:'Archivo',sans-serif; line-height:1.35;
+    /* keep titles to two lines so every card in a row stays the same height */
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .card .loc{font-size:13.5px; color:var(--ink-mute); margin-top:5px; display:flex; align-items:center; gap:5px;}
+  .card .meta{margin-top:14px; padding-top:14px; border-top:1px solid var(--line); display:flex; gap:16px; font-size:13px; color:var(--ink-soft);}
 
   .filter-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:30px;}
-  .filter-chip{padding:9px 18px; border-radius:20px; border:1px solid var(--line); background:var(--paper-2); font-size:13.5px; font-weight:600; cursor:pointer;}
-  .filter-chip.active{background:var(--forest); color:#fff; border-color:var(--forest);}
+  .filter-chip{
+    display:inline-flex; align-items:center; min-height:44px;
+    padding:9px 18px; border-radius:var(--r-pill); border:1px solid var(--line);
+    background:var(--paper-2); font-size:13.5px; font-weight:600; cursor:pointer;
+    font-family:inherit; color:var(--ink);
+  }
+  .filter-chip:hover{border-color:var(--forest); color:var(--forest); background:var(--tint-forest);}
+  .filter-chip.active{background:var(--forest); color:#fff; border-color:var(--forest); box-shadow:var(--sh-1);}
 
   /* ---------- PAGINATION ---------- */
   .pagination{display:flex; align-items:center; justify-content:center; gap:6px; margin-top:40px; flex-wrap:wrap;}
-  .pagination a, .pagination span{display:inline-flex; align-items:center; justify-content:center; min-width:38px; height:38px; padding:0 12px; border-radius:8px; border:1px solid var(--line); background:var(--paper-2); font-size:13.5px; font-weight:600; color:var(--ink);}
+  .pagination a, .pagination span{display:inline-flex; align-items:center; justify-content:center; min-width:44px; height:44px; padding:0 12px; border-radius:var(--r-sm); border:1px solid var(--line); background:var(--paper-2); font-size:13.5px; font-weight:600; color:var(--ink);}
   .pagination a:hover{border-color:var(--forest); color:var(--forest);}
   .pagination .active span{background:var(--forest); color:#fff; border-color:var(--forest);}
   .pagination .disabled span{color:rgba(19,28,43,0.35); cursor:default;}
@@ -182,7 +309,7 @@
   .newsletter p{font-size:13px; color:rgba(255,255,255,0.75); margin-top:2px;}
   .newsletter-form{display:flex; gap:0; flex:1; max-width:420px;}
   .newsletter-form input{flex:1; border:none; padding:13px 16px; border-radius:8px 0 0 8px; font-family:inherit; font-size:14px;}
-  .newsletter-form input:focus{outline:none;}
+  .newsletter-form input:focus-visible{outline:2px solid var(--gold-light); outline-offset:-2px; z-index:1; position:relative;}
   .newsletter-form button{background:var(--gold); color:var(--forest-dark); border:none; padding:0 22px; font-weight:700; font-size:14px; border-radius:0 8px 8px 0; cursor:pointer;}
   .newsletter-form button:hover{background:var(--gold-light);}
 
@@ -216,6 +343,11 @@
 
   @yield('styles')
 </style>
+<script>
+  /* Runs before first paint: only hide .reveal elements once we know JS can show them again. */
+  document.documentElement.classList.remove('no-js');
+  document.documentElement.classList.add('js');
+</script>
 </head>
 <body>
 
@@ -241,7 +373,9 @@
   </div>
 </div>
 
-<header>
+<span id="headerSentinel" aria-hidden="true" style="position:absolute; top:0; height:1px; width:1px;"></span>
+
+<header id="siteHeader">
   <div class="wrap">
     <a href="{{ route('home') }}" class="logo"><x-logo /> {{ config('app.name') }}</a>
     <nav>
@@ -262,7 +396,7 @@
           </form>
         @else
           <a class="btn btn-ghost" href="{{ route('login') }}">Sign In</a>
-          <a class="btn btn-primary" href="{{ route('register') }}">Get Started</a>
+          <a class="btn btn-gold" href="{{ route('register') }}">Get Started</a>
         @endauth
       </div>
     </nav>
@@ -358,10 +492,44 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  // Scroll-to-top visibility
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  // Scroll-to-top visibility (passive: never blocks scrolling)
   window.addEventListener('scroll', () => {
     document.getElementById('scrollTopBtn').classList.toggle('visible', window.scrollY > 400);
-  });
+  }, { passive: true });
+
+  // Sticky header elevation, via sentinel rather than a per-frame scroll handler
+  (function () {
+    const sentinel = document.getElementById('headerSentinel');
+    const header = document.getElementById('siteHeader');
+    if (!sentinel || !header || !('IntersectionObserver' in window)) return;
+    new IntersectionObserver(
+      ([entry]) => header.classList.toggle('stuck', !entry.isIntersecting),
+      { threshold: 0 }
+    ).observe(sentinel);
+  })();
+
+  // Scroll reveal — only animate what actually enters the viewport
+  (function () {
+    const items = document.querySelectorAll('.reveal');
+    if (!items.length) return;
+
+    // No observer support, or the visitor asked for less motion: show everything now.
+    if (!('IntersectionObserver' in window) || reduceMotion.matches) {
+      items.forEach(el => el.classList.add('in'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target); // reveal once, then stop watching
+        }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    items.forEach(el => io.observe(el));
+  })();
 
   // Newsletter subscribe
   document.getElementById('newsletterForm').addEventListener('submit', function (e) {

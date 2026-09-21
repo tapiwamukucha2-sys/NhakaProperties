@@ -68,7 +68,7 @@
   <div class="hero-dots" id="heroDots"></div>
 
   <div class="wrap hero-inner">
-    <div class="reveal">
+    <div class="reveal-now">
       <div class="province-tag"><span class="dot"></span>Now covering all 10 provinces</div>
       <h1>Property in Zimbabwe, without the guesswork.</h1>
       <p class="lede">Search verified rentals, houses, stands and commercial space from Harare to Mutare — direct from landlords and registered agents, no middle-men chasing you on WhatsApp.</p>
@@ -141,7 +141,8 @@
       <a class="card" href="{{ route('listings.show', $listing->slug) }}">
         <div class="thumb">
           @if ($listing->imageUrls())
-            <img src="{{ $listing->imageUrls()[0] }}" alt="{{ $listing->title }}">
+            <img src="{{ $listing->imageUrls()[0] }}" alt="{{ $listing->title }}"
+                 width="400" height="200" loading="lazy" decoding="async">
           @endif
           @if ($listing->is_verified)
             <span class="badge"><span class="v"></span>Verified</span>

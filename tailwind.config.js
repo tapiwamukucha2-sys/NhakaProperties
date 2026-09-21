@@ -12,7 +12,41 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                // Archivo is the font the app actually loads; 'Figtree' never was.
+                sans: ['Archivo', ...defaultTheme.fontFamily.sans],
+                brand: ['Fraunces', ...defaultTheme.fontFamily.serif],
+            },
+            colors: {
+                ink: {
+                    DEFAULT: 'var(--ink)',
+                    soft: 'var(--ink-soft)',
+                    mute: 'var(--ink-mute)',
+                },
+                paper: {
+                    DEFAULT: 'var(--paper)',
+                    raised: 'var(--paper-2)',
+                },
+                forest: {
+                    DEFAULT: 'var(--forest)',
+                    dark: 'var(--forest-dark)',
+                },
+                gold: {
+                    DEFAULT: 'var(--gold)',
+                    light: 'var(--gold-light)',
+                },
+                line: {
+                    DEFAULT: 'var(--line)',
+                    strong: 'var(--line-strong)',
+                },
+            },
+            borderRadius: {
+                brand: 'var(--r-md)',
+                'brand-lg': 'var(--r-lg)',
+            },
+            boxShadow: {
+                'brand-1': 'var(--sh-1)',
+                'brand-2': 'var(--sh-2)',
+                'brand-3': 'var(--sh-3)',
             },
         },
     },
