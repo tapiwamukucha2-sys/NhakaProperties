@@ -38,7 +38,15 @@ class PageController extends Controller
 
     public function about()
     {
-        return view('about');
+        $siteStats = [
+            'listings' => Property::published()->count(),
+            'agents' => User::whereIn('role', ['agent', 'landlord'])
+                ->whereHas('properties', fn ($q) => $q->published())
+                ->count(),
+            'provinces' => Property::published()->distinct('province')->count('province'),
+        ];
+
+        return view('about', compact('siteStats'));
     }
 
     public function terms()

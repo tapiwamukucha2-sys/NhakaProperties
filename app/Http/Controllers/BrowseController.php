@@ -30,7 +30,8 @@ class BrowseController extends Controller
             ->when($sort === 'price_asc', fn ($q) => $q->orderBy('price', 'asc'))
             ->when($sort === 'price_desc', fn ($q) => $q->orderBy('price', 'desc'))
             ->when($sort === 'newest' || ! $sort, fn ($q) => $q->latest())
-            ->get();
+            ->paginate(12)
+            ->withQueryString();
 
         $categories = ['rent' => 'Rent', 'buy' => 'Buy', 'land' => 'Land', 'commercial' => 'Commercial'];
 

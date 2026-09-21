@@ -82,6 +82,8 @@
         </a>
         @endforeach
       </div>
+
+      {{ $listings->links('vendor.pagination.nhaka') }}
     @endif
   </div>
 </section>

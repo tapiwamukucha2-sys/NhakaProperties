@@ -31,16 +31,16 @@
 
     <div class="about-grid">
       <div class="about-card">
-        <div class="num">2,480+</div>
-        <p style="margin-top:6px; font-size:14px; color:rgba(19,28,43,0.65);">Verified listings across the country</p>
+        <div class="num">{{ number_format($siteStats['listings']) }}</div>
+        <p style="margin-top:6px; font-size:14px; color:rgba(19,28,43,0.65);">Live listings across the country</p>
       </div>
       <div class="about-card">
-        <div class="num">640+</div>
+        <div class="num">{{ number_format($siteStats['agents']) }}</div>
         <p style="margin-top:6px; font-size:14px; color:rgba(19,28,43,0.65);">Registered agents and landlords</p>
       </div>
       <div class="about-card">
-        <div class="num">10</div>
-        <p style="margin-top:6px; font-size:14px; color:rgba(19,28,43,0.65);">Provinces covered nationwide</p>
+        <div class="num">{{ $siteStats['provinces'] }}</div>
+        <p style="margin-top:6px; font-size:14px; color:rgba(19,28,43,0.65);">Provinces with active listings</p>
       </div>
     </div>
   </div>

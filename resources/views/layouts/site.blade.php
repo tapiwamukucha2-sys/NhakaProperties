@@ -127,6 +127,13 @@
   .filter-chip{padding:9px 18px; border-radius:20px; border:1px solid var(--line); background:var(--paper-2); font-size:13.5px; font-weight:600; cursor:pointer;}
   .filter-chip.active{background:var(--forest); color:#fff; border-color:var(--forest);}
 
+  /* ---------- PAGINATION ---------- */
+  .pagination{display:flex; align-items:center; justify-content:center; gap:6px; margin-top:40px; flex-wrap:wrap;}
+  .pagination a, .pagination span{display:inline-flex; align-items:center; justify-content:center; min-width:38px; height:38px; padding:0 12px; border-radius:8px; border:1px solid var(--line); background:var(--paper-2); font-size:13.5px; font-weight:600; color:var(--ink);}
+  .pagination a:hover{border-color:var(--forest); color:var(--forest);}
+  .pagination .active span{background:var(--forest); color:#fff; border-color:var(--forest);}
+  .pagination .disabled span{color:rgba(19,28,43,0.35); cursor:default;}
+
   /* ---------- TRUST ---------- */
   .trust{padding:70px 0; background:var(--forest); color:#fff;}
   .trust-grid{display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center;}
