@@ -71,9 +71,11 @@
 
   <div class="wrap hero-inner">
     <div class="reveal-now">
-      <div class="province-tag"><span class="dot"></span>Now covering all 10 provinces</div>
+      {{-- Keep this claim non-numeric: the stats strip below prints the real
+           counts, and a hardcoded number here contradicted it on sight. --}}
+      <div class="province-tag"><span class="dot"></span>Every listing verified before it goes live</div>
       <h1>Property in Zimbabwe, without the guesswork.</h1>
-      <p class="lede">Search verified rentals, houses, stands and commercial space from Harare to Mutare — direct from landlords and registered agents, no middle-men chasing you on WhatsApp.</p>
+      <p class="lede">Search verified rentals, houses, stands and commercial space across Zimbabwe — direct from landlords and registered agents, no middle-men chasing you on WhatsApp.</p>
 
       <form class="searchbar" action="{{ route('browse') }}" method="GET">
         <div class="field">
